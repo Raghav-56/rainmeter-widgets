@@ -1,4 +1,5 @@
 $ErrorActionPreference='Stop'
+Import-Module (Join-Path $PSHOME 'Modules\Microsoft.PowerShell.Security\Microsoft.PowerShell.Security.psd1') -ErrorAction Stop
 $source=Split-Path $PSScriptRoot -Parent
 $testRoot=Join-Path $env:TEMP ('rainmeter-deployment-test-'+[Guid]::NewGuid().ToString('N'))
 [void][IO.Directory]::CreateDirectory($testRoot)
@@ -18,9 +19,9 @@ try {
     [void][IO.Directory]::CreateDirectory($rainmeter)
     [IO.File]::WriteAllText((Join-Path $rainmeter 'Rainmeter.exe'),'fixture')
     [IO.File]::WriteAllText((Join-Path $rainmeter 'Rainmeter.ini'),"[Rainmeter]`r`nSkinPath=$skins`r`n[Unrelated]`r`nActive=1`r`nWindowX=123`r`n")
-    $layoutHash=(Get-FileHash -LiteralPath (Join-Path $rainmeter 'Rainmeter.ini')).Hash
     $stateRoot=Join-Path $env:LOCALAPPDATA 'RainmeterWidgets'
     . (Join-Path $repo 'tools\Deployment.ps1')
+    $layoutHash=Get-WidgetHash (Join-Path $rainmeter 'Rainmeter.ini')
     $script:starts=0;$script:stops=0;$script:failStart=$false
     # The lifecycle boundary is mocked. All planning, builds, backups, copies,
     # state transitions, DPAPI writes and file verification are real.
