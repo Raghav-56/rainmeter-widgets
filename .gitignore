@@ -1,0 +1,26 @@
+# Local credentials, configuration, observations and generated files
+**/settings.json
+**/key.dpapi
+**/snapshot.ini
+**/Rainmeter.ini
+**/Rainmeter.data
+**/Rainmeter.stats
+**/.cliproxy-widget
+**/stop
+**/*.log
+**/*.exe
+**/*.dll
+**/*.lnk
+**/*.tmp
+**/*.pfx
+**/*.pem
+**/*.key
+**/.env
+**/.env.*
+**/Backups/
+**/Layouts/
+**/repair-*/
+__pycache__/
+.venv/
+.vscode/
+.idea/
