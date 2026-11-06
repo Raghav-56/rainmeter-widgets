@@ -198,7 +198,7 @@ end
 
 function ToggleToday()
     showToday = not showToday
-    SKIN:Bang('!WriteKeyValue', 'Variables', 'ShowToday', showToday and '1' or '0', SKIN:MakePathAbsolute('Meter.ini'))
+    SKIN:Bang('!WriteKeyValue', 'Variables', 'ShowToday', showToday and '1' or '0', SKIN:MakePathAbsolute('@Resources\\User.inc'))
     ApplyView()
 end
 
@@ -216,4 +216,21 @@ function Update()
         return ratio
     end
     return snapshot(now).lived
+end
+
+function DeploymentCheck(nonce)
+    assert(type(nonce) == 'string' and nonce:match('^%x+$') and #nonce == 32)
+    RefreshClock()
+    assert(SKIN:GetMeter('Weeks'):GetOption('Text'):match('%d'), 'Weeks did not render')
+    local settings = assert(io.open(SKIN:MakePathAbsolute('@Resources\\User.inc'), 'r'))
+    for line in settings:lines() do
+        local key, value = line:match('^(%a+)=(%d+)%s*$')
+        if key == 'BirthYear' or key == 'BirthMonth' or key == 'BirthDay' or key == 'ReferenceAge' then
+            assert(tonumber(SKIN:GetVariable(key)) == tonumber(value), 'Personal configuration did not load')
+        end
+    end
+    settings:close()
+    local file = assert(io.open(SKIN:MakePathAbsolute('@Resources\\Deployment.ready'), 'w'))
+    file:write(nonce)
+    file:close()
 end

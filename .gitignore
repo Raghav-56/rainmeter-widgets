@@ -24,3 +24,11 @@ __pycache__/
 .venv/
 .vscode/
 .idea/
+**/User.inc
+**/state.json
+**/deployment.lock
+**/backups/
+**/staging/
+**/Deployment.ready
+**/pending.json
+**/.rainmeter-widgets

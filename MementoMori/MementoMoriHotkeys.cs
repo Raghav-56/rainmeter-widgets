@@ -10,7 +10,7 @@ internal static class MementoMoriHotkeys
     private const int HotkeyId = 17061;
     private const uint HotkeyMessage = 0x0312;
     private static readonly string Root = AppDomain.CurrentDomain.BaseDirectory;
-    private static readonly string Rainmeter = Path.Combine(Root, "Rainmeter.exe");
+    private static string Rainmeter;
 
     [StructLayout(LayoutKind.Sequential)]
     private struct Message
@@ -93,18 +93,23 @@ internal static class MementoMoriHotkeys
     }
 
     [STAThread]
-    private static int Main()
+    private static int Main(string[] args)
     {
+        if (args.Length != 1 || !File.Exists(args[0])) return 2;
+        Rainmeter = Path.GetFullPath(args[0]);
         bool first;
         using (Mutex mutex = new Mutex(true, "Local\\MementoMori.Hotkey", out first))
         {
             if (!first) return 0;
             bool registered = false;
+            using (EventWaitHandle ready = new EventWaitHandle(false, EventResetMode.ManualReset, "Local\\MementoMori.Hotkey.Ready"))
+            {
             try
             {
                 registered = RegisterHotKey(IntPtr.Zero, HotkeyId, 0x4003, 0x4D);
                 if (!registered) throw new Win32Exception(Marshal.GetLastWin32Error(), "Ctrl+Alt+M could not be registered");
                 Log("REGISTERED Ctrl+Alt+M");
+                ready.Set();
                 Message message;
                 int result;
                 while ((result = GetMessage(out message, IntPtr.Zero, 0, 0)) > 0)
@@ -124,7 +129,9 @@ internal static class MementoMoriHotkeys
             }
             finally
             {
+                ready.Reset();
                 if (registered) UnregisterHotKey(IntPtr.Zero, HotkeyId);
+            }
             }
         }
     }

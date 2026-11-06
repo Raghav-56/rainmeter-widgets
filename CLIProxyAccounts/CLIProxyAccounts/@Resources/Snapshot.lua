@@ -227,3 +227,12 @@ function LiveTest()
     LayoutTest()
     print('CLIProxyAccounts LiveTest PASS: '..table.concat(summary, '; ')..'; '..SKIN:GetMeter('Pool'):GetOption('Text'))
 end
+
+function DeploymentCheck(nonce)
+    assert(type(nonce) == 'string' and nonce:match('^%x+$') and #nonce == 32)
+    Update()
+    LayoutTest()
+    local file = assert(io.open(SKIN:MakePathAbsolute('@Resources\\Deployment.ready'), 'w'))
+    file:write(nonce)
+    file:close()
+end

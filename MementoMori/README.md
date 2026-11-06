@@ -1,23 +1,17 @@
 # Memento Mori
 
-A Rainmeter life calendar with compact, expanded and mini views. It shows full weeks to a chosen age horizon and the fraction already lived. Daytime counts down to 22:00; the sleep window counts down to 06:00. The horizon is a personal choice, not a prediction.
+A life-in-weeks calendar with compact, expanded and mini views. The horizon is a personal choice, not a prediction. Daytime counts down to 22:00 and the sleep window to 06:00.
 
-## Skin
-
-Copy `Skins/MementoMori` into your chosen Rainmeter skin directory, then load `MementoMori/Meter.ini` through Rainmeter. Back up an existing skin before deliberately replacing it.
-
-Edit the `[Variables]` section of your installed `Meter.ini`: `BirthYear`, `BirthMonth`, `BirthDay`, and `ReferenceAge`. The repository uses the example date 1 January 2000 and an age horizon of 60. Refresh the skin after editing. Keep your personal configuration local.
-
-Click **View +**, **Mini** or **Hide** to change views. Drag the card to move it. A hidden skin can be shown through Rainmeter's management window. The skin works locally without network requests.
-
-## Optional privacy hotkey
-
-`MementoMoriHotkeys.cs` implements Ctrl+Alt+M. `Launch.ps1` expects `Rainmeter.exe` and the compiled `MementoMoriHotkeys.exe` beside it in a portable Rainmeter installation. These helpers are optional; loading the skin does not require them.
-
-Compile the handler to a staging directory with the .NET Framework C# compiler:
+From the repository root:
 
 ```powershell
-& "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /optimize+ /out:MementoMoriHotkeys.exe .\MementoMoriHotkeys.cs
+.\Manage.ps1 install -Widget MementoMori
 ```
 
-To use it, deliberately copy the compiled handler and `Launch.ps1` beside your portable `Rainmeter.exe`, then run that installed launcher. No startup task or shortcut is created by this repository. Avoid starting a second handler while an existing installation owns Ctrl+Alt+M.
+Setup asks for your birth date and creates `@Resources/User.inc` in the installed skin. Change `BirthYear`, `BirthMonth`, `BirthDay`, `ReferenceAge` or colors in that local file and refresh the skin. The repository defaults are examples. Updates preserve your file and the widget's ShowToday preference.
+
+Click **View +**, **Mini** or **Hide** to change views. Ctrl+Alt+M hides or restores the widget. The hotkey handler starts when the skin loads. Rainmeter's management window can also restore a hidden skin. The widget makes no network requests.
+
+The managed launcher and locally compiled C# handler live under `%LOCALAPPDATA%\RainmeterWidgets\MementoMori`. They read the selected Rainmeter path from local settings, so Rainmeter need not sit beside them. A recognized older launcher is migrated to a forwarding script so existing shortcuts still work.
+
+Change code in this directory and use the shared [update workflow](../README.md#change-code-and-update-your-installation). Do not put your real date or installed settings in the repository.
